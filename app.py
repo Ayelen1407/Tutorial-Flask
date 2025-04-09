@@ -1,13 +1,21 @@
-from flask import Flask
+from flask import Flask, url_for
 
 app = Flask(__name__)
 
 @app.route("/")
 def principal():
-    return """
-        <a href='/pregunta'>pregunta</a>
-        <a href='/respuesta'>respuesta</a>
-        <a href='/pregunta_con_nombre'>
+    url_hola = url_for("consultaxn")
+    url_dado = url_for("dado", caras=6)
+    url_logo = url_for("static", filename="aquarius.jpg")
+
+    return f"""
+    <a href="{url_hola}">Hola</a>
+    <br>
+    <a href="{url_for("bye")}">Chau</a>
+    <br>
+    <a href="{url_logo}">Logo</a>
+    <br>
+    <a href="{url_dado}">Tirar_dado</a>
     """
 
 @app.route("/pregunta")
@@ -35,6 +43,6 @@ def respuesta():
     return "<p>Estoy bien</p>"
 
 #mi ejemplo
-@app.route("/consulta/<string:nombre>")
-def pregunta_con_nombre(nombre):
+@app.route("/consultaxn/<string:nombre>")
+def consultaxn(nombre):
     return f"<p>¿Cómo estas {nombre}?</p>"
