@@ -7,6 +7,7 @@ def principal():
     return """
         <a href='/pregunta'>pregunta</a>
         <a href='/respuesta'>respuesta</a>
+        <a href='/pregunta_con_nombre'>
     """
 
 @app.route("/pregunta")
@@ -36,4 +37,4 @@ def respuesta():
 #mi ejemplo
 @app.route("/consulta/<string:nombre>")
 def pregunta_con_nombre(nombre):
-    return f"<p>¿Cómo estas {nombre}?!</p>"
+    return f"<p>¿Cómo estas {nombre}?</p>"
