@@ -4,11 +4,15 @@ import sqlite3
 app = Flask(__name__)
 #------CONEXION A BASE DE DATOS
 db=None
+def dict_factory(cursor, row):
+  """Arma un diccionario con los valores de la fila."""
+  fields = [column[0] for column in cursor.description]
+  return {key: value for key, value in zip(fields, row)}
+
 def abrirConexion():
     global db
     db = sqlite3.connect("instance/datos.sqlite")
-    db.row_factory = sqlite3.Row
-    return db
+    db.row_factory = dict_factory
 
 def cerrarConexion():
     global db
@@ -16,17 +20,54 @@ def cerrarConexion():
         db.close()
         db = None
 
-@app.route("/usuarios/")
-def obterGente():
-    global db
-    conexion = abrirConexion()
-    cursor = conexion.cursor()
-    cursor.execute('SELECT * FROM usuarios')
-    resultado = cursor.fetchall()# fetchall te selecciona todos / fetchone te trae un solo resultado
+@app.route("/test-db")
+def testDB():
+   abrirConexion()
+   cursor = db.cursor()
+   cursor.execute("SELECT COUNT(*) AS cant FROM usuarios; ")
+   res = cursor.fetchone()
+   registros = res["cant"]
+   cerrarConexion()
+   return f"Hay {registros} registros en la tabla usuarios"
+
+#@app.route("/usuarios/")
+#def obterGente():
+#    global db
+#    conexion = abrirConexion()
+#    cursor = conexion.cursor()
+#    cursor.execute('SELECT * FROM usuarios')
+#    resultado = cursor.fetchall()# fetchall te selecciona todos / fetchone te trae un solo resultado
+#    cerrarConexion()
+#    fila = [dict(row) for row in resultado]# fila por fila
+#    return str(fila)# te lo devuelve en string
+
+#------ EJERCICIO - CREAR RUTAS(3)
+@app.route("/insertar/<string:usuario>/<string:email>")
+def insertar(usuario, email):
+    abrirConexion()
+    cursor = db.execute("INSERT INTO usuarios(usuario, email) VALUES (?, ?);", (usuario, email))
+    db.commit()
     cerrarConexion()
-    fila = [dict(row) for row in resultado]# fila por fila
-    return str(fila)# te lo devuelve en string
+    return "se agregó a ayelen con su email"
+    
+@app.route("/borrar/<int:id>")
+def borrar(id):
+    abrirConexion()
+    cursor = db.execute("DELETE FROM usuarios WHERE id=?", (id,))
+    db.commit()
+    cerrarConexion()
+    return f"se borro el registro {id}"
+
+@app.route("/mostrar/<int:id>")
+def mostrar_nombre_email(id):
+    abrirConexion()
+    cursor = db.cursor()
+    cursor.execute("SELECT usuario, email FROM usuarios WHERE id=?", (id,))
+    res = cursor.fetchone()
+    cerrarConexion()
+    return f"usuario:{res['usuario']} email:{res['email']}"
 #------
+
 
 @app.route("/")
 def principal():
