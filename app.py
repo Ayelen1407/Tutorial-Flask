@@ -67,7 +67,13 @@ def mostrar_nombre_email(id):
     cerrarConexion()
     return f"usuario:{res['usuario']} email:{res['email']}"
 #------
-
+#------ EJERCICIO EXTRA
+@app.route("/insertar/<string:usuario>/<string:email>")
+def insertar(usuario, email):
+    abrirConexion()
+    cursor = db.execute("INSERT INTO usuarios(usuario, email) VALUES (?, ?);", (usuario, email))
+    db.commit()
+    cerrarConexion()
 
 @app.route("/")
 def principal():
