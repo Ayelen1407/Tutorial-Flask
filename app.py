@@ -1,4 +1,4 @@
-from flask import Flask, url_for
+from flask import Flask, url_for, render_template
 import sqlite3
 
 app = Flask(__name__)
@@ -41,7 +41,7 @@ def testDB():
 #    fila = [dict(row) for row in resultado]# fila por fila
 #    return str(fila)# te lo devuelve en string
 
-#------ EJERCICIO - CREAR RUTAS(3)
+#------ EJERCICIO - CREAR RUTAS(3) INSERTAR - BORRAR - MOSTRAR
 @app.route("/insertar/<string:usuario>/<string:email>")
 def insertar(usuario, email):
     abrirConexion()
@@ -66,15 +66,29 @@ def mostrar_nombre_email(id):
     res = cursor.fetchone()
     cerrarConexion()
     return f"usuario:{res['usuario']} email:{res['email']}"
-#------
+#------ UNA RUTA USANDO PLANTILLA
+@app.route("/mostrar-datos-plantillas/<int:id>")
+def datos_plantilla(id):
+    abrirConexion()
+    cursor = db.cursor()
+    cursor.execute("SELECT id, usuario, email FROM usuarios WHERE id=?; ", (id,))
+    res = cursor.fetchone()
+    cerrarConexion()
+    usuario = None
+    email = None
+    if res != None:
+        usuario=res['usuario']
+        email=res['email']
+    return render_template("datos.html", id=id, usuario=usuario, email=email)
+
 #------ EJERCICIO EXTRA
 @app.route("/insertar/<string:usuario>/<string:email>")
-def insertar(usuario, email):
+def añadir(usuario, email):
     abrirConexion()
     cursor = db.execute("INSERT INTO usuarios(usuario, email) VALUES (?, ?);", (usuario, email))
     db.commit()
     cerrarConexion()
-
+#------ (falta terminar)
 @app.route("/")
 def principal():
     url_hola = url_for("consultaxn", nombre='Aye')

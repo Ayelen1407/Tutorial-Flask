@@ -13,3 +13,5 @@ db.commit() <!--para confirmar los cambios>
 db.cursor() <!--para pedir un cursor nuevo>
 db.execute() <!--crea un cursor nuevo y se crea/hace la consulta(se guarda dentro de una variable)>
 db.close() <!--cierra ¿?>
+template <!--plantilla - la informacion se puede modificar (tiene huecos donde se puede rellenar, tiene un proceso de envio)>
+archivo static <!--la informacion se mantiene, ej:css(es siempre igual) tiene una sola ruta y pagina>
