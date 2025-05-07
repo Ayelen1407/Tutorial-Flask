@@ -5,8 +5,15 @@
     {%  if usuario == None %}
         <h1 style='color:red'>No existe el usuario {{id}}</h1>
     {%  else %}
-        <h1>Usuario con id: {{id}}</h1>
-        <h2>{{usuario}} ({{email}})</h2>
+    <h2>Usuario con id: {{id}}</h2>
+    <div>
+        <ul>
+            <li>Nombre: {{usuario}}</li>
+            <li>Email: {{email}} </li>
+            <li>Telefono: {{telefono}}</li>
+            <li>Dirección: {{direccion}}</li>
+        </ul>
+    </div>
     {%  endif %}
 </body>
 </html>

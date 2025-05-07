@@ -71,16 +71,21 @@ def mostrar_nombre_email(id):
 def datos_plantilla(id):
     abrirConexion()
     cursor = db.cursor()
-    cursor.execute("SELECT id, usuario, email FROM usuarios WHERE id=?; ", (id,))
+    cursor.execute("SELECT id, usuario, email, telefono, direccion FROM usuarios WHERE id=?; ", (id,))
     res = cursor.fetchone()
     cerrarConexion()
     usuario = None
     email = None
+    telefono= None
+    direccion = None
     if res != None:
         usuario=res['usuario']
         email=res['email']
-    return render_template("datos.html", id=id, usuario=usuario, email=email)
+        telefono=res['telefono']
+        direccion=res['direccion']
+    return render_template("datos.html", id=id, usuario=usuario, email=email, telefono=telefono, direccion=direccion)
 
+    
 #------ EJERCICIO EXTRA
 @app.route("/insertar/<string:usuario>/<string:email>")
 def añadir(usuario, email):
@@ -89,8 +94,31 @@ def añadir(usuario, email):
     db.commit()
     cerrarConexion()
 #------ (falta terminar)
+
+#------ EJERCICIO - Nueva ruta con link 
+@app.route("/mostrar-usuarios-plantillas")
+def lista_usuarios():
+    abrirConexion()
+    cursor = db.cursor()
+    cursor.execute("SELECT usuario FROM usuarios")
+    res = cursor.fetchall()
+    cerrarConexion()
+    return render_template("lista.html", usuarios = [res])
+
+@app.route("/usuarios")
+def usuarios():
+     url_mostrar1 = url_for("datos_plantilla", id=1)
+     url_mostrar2 = url_for("datos_plantilla", id=2)
+     return f"""
+    <a href="{url_mostrar1}">andres</a>
+    <br>
+    <a href="{url_mostrar2}">tomas</a>
+    """
+#------
 @app.route("/")
 def principal():
+   
+    
     url_hola = url_for("consultaxn", nombre='Aye')
     url_dado = url_for("dado", caras=6)
     url_logo = url_for("static", filename="aquarius.jpg")
